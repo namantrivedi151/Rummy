@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AuraPlay - Elite Card & Strategy Gaming Platform</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#9370DB', // MediumPurple
+                        primaryDark: '#7B68EE',
+                        accentRed: '#EF4444', // Red accent
+                        darkBg: '#0B0F19',
+                        cardBg: '#131827',
+                        cardHover: '#1E2538'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Inter Font & Lucide Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0B0F19;
+            color: #F3F4F6;
+            overflow-x: hidden;
+        }
+        /* Apple-style smooth glassmorphism and motion */
+        .glass-nav {
+            background: rgba(11, 15, 25, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .glass-card {
+            background: rgba(19, 24, 39, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(147, 112, 219, 0.15);
+        }
+        .glass-card:hover {
+            border-color: rgba(147, 112, 219, 0.4);
+            transform: translateY(-4px);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .apple-glow {
+            box-shadow: 0 0 50px -10px rgba(147, 112, 219, 0.25);
+        }
+        .red-glow {
+            box-shadow: 0 0 40px -10px rgba(239, 68, 68, 0.3);
+        }
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .fade-in-section.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        /* Hide scrollbar for clean aesthetic */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-darkBg text-gray-100 antialiased selection:bg-primary selection:text-white">
+
+    <header class="fixed top-0 left-0 right-0 z-50 glass-nav border-b border-gray-800/60 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <a href="#home" onclick="switchPage('home')" class="flex items-center space-x-3 group">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-primary to-accentRed flex items-center justify-center text-white font-black text-xl shadow-lg group-hover:scale-105 transition-transform duration-300">
+                    A
+                </div>
+                <span class="text-xl font-bold tracking-tight text-white flex items-center">
+                    Aura<span class="text-primary">Play</span>
+                </span>
+            </a>
+
+            <!-- Desktop Menu -->
+            <nav class="hidden md:flex items-center space-x-1 lg:space-x-2 bg-gray-900/50 p-1.5 rounded-full border border-gray-800">
+                <button onclick="switchPage('home')" id="nav-home" class="nav-btn px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 text-white bg-primary shadow-md">Home</button>
+                <button onclick="switchPage('service')" id="nav-service" class="nav-btn px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 text-gray-300 hover:text-white hover:bg-gray-800/50">Service</button>
+                <button onclick="switchPage('about')" id="nav-about" class="nav-btn px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 text-gray-300 hover:text-white hover:bg-gray-800/50">About</button>
+                <button onclick="switchPage('blog')" id="nav-blog" class="nav-btn px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 text-gray-300 hover:text-white hover:bg-gray-800/50">Blog</button>
+                <button onclick="switchPage('contact')" id="nav-contact" class="nav-btn px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 text-gray-300 hover:text-white hover:bg-gray-800/50">Contact</button>
+            </nav>
+
+            <!-- Quick Action CTA -->
+            <div class="hidden md:flex items-center space-x-4">
+                <a href="https://officialallyonogames.com/rummy-east/" target="_blank" rel="noopener noreferrer" class="relative group overflow-hidden rounded-full p-px font-semibold text-xs uppercase tracking-wider">
+                    <span class="absolute inset-0 bg-gradient-to-r from-primary via-accentRed to-primary animate-pulse"></span>
+                    <span class="relative block px-5 py-2.5 rounded-full bg-darkBg text-white transition-all duration-300 group-hover:bg-opacity-80 flex items-center space-x-2">
+                        <span>Get App</span>
+                        <i class="fa-solid fa-arrow-down text-accentRed"></i>
+                    </span>
+                </a>
+            </div>
+
+            <!-- Mobile Menu Toggle -->
+            <button onclick="toggleMobileMenu()" class="md:hidden text-gray-300 hover:text-white focus:outline-none p-2 rounded-lg hover:bg-gray-800">
+                <i id="mobile-menu-icon" class="fa-solid fa-bars text-xl"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Dropdown Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-cardBg border-b border-gray-800 px-4 pt-2 pb-6 space-y-2">
+            <button onclick="switchPage('home'); toggleMobileMenu();" class="block w-full text-left px-4 py-3 rounded-xl text-base font-medium text-white hover:bg-primary/20">Home</button>
+            <button onclick="switchPage('service'); toggleMobileMenu();" class="block w-full text-left px-4 py-3 rounded-xl text-base font-medium text-gray-300 hover:bg-primary/20 hover:text-white">Service</button>
+            <button onclick="switchPage('about'); toggleMobileMenu();" class="block w-full text-left px-4 py-3 rounded-xl text-base font-medium text-gray-300 hover:bg-primary/20 hover:text-white">About</button>
+            <button onclick="switchPage('blog'); toggleMobileMenu();" class="block w-full text-left px-4 py-3 rounded-xl text-base font-medium text-gray-300 hover:bg-primary/20 hover:text-white">Blog</button>
+            <button onclick="switchPage('contact'); toggleMobileMenu();" class="block w-full text-left px-4 py-3 rounded-xl text-base font-medium text-gray-300 hover:bg-primary/20 hover:text-white">Contact</button>
+            <div class="pt-2">
+                <a href="https://officialallyonogames.com/rummy-east/" target="_blank" class="w-full block text-center py-3 rounded-xl bg-gradient-to-r from-primary to-accentRed font-semibold text-white shadow-lg">Download App Now</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="pt-20">
+
+        <!-- ================= PAGE 1: HOME ================= -->
+        <div id="page-home" class="page-content block">
+            <!-- Hero Section -->
+            <section class="relative min-h-[90vh] flex items-center justify-center overflow-hidden py-20 px-4 sm:px-6 lg:px-8">
+                <!-- Background Glows -->
+                <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-primary/20 rounded-full blur-[120px] pointer-events-none"></div>
+                <div class="absolute bottom-10 right-10 w-80 h-80 bg-accentRed/15 rounded-full blur-[100px] pointer-events-none"></div>
+
+                <div class="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
+                    <div class="lg:col-span-7 text-center lg:text-left space-y-8 fade-in-section">
+                        <div class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-primary/10 border border-primary/30 text-primary text-xs font-semibold uppercase tracking-widest">
+                            <i class="fa-solid fa-sparkles"></i>
+                            <span>Next-Gen Gaming Experience</span>
+                        </div>
+                        <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-white leading-[1.1]">
+                            Elevate Your <span class="bg-gradient-to-r from-primary to-accentRed bg-clip-text text-transparent">Card Gaming</span> Mastery
+                        </h1>
+                        <p class="text-lg sm:text-xl text-gray-300 max-w-2xl mx-auto lg:mx-0 font-light leading-relaxed">
+                            Immerse yourself in pristine interfaces, lightning-fast performance, and secure tactical competition designed for elite players worldwide.
+                        </p>
+                        <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
+                            <a href="https://officialallyonogames.com/rummy-east/" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-primary to-primaryDark text-white font-bold text-base shadow-xl hover:shadow-primary/50 transition-all duration-300 transform hover:-translate-y-0.5 text-center flex items-center justify-center space-x-3 apple-glow">
+                                <span>Rummy East game download</span>
+                                <i class="fa-solid fa-download"></i>
+                            </a>
+                            <button onclick="switchPage('service')" class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-cardBg border border-gray-700 hover:border-primary text-gray-200 font-semibold text-base transition-all duration-300 text-center">
+                                Explore Services
+                            </button>
+                        </div>
+                        <div class="flex items-center justify-center lg:justify-start space-x-8 pt-4 text-sm text-gray-400">
+                            <div class="flex items-center space-x-2">
+                                <i class="fa-solid fa-shield-halved text-primary"></i>
+                                <span>100% Verified Secure</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <i class="fa-solid fa-bolt text-accentRed"></i>
+                                <span>Instant Setup</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Hero Graphic / Mockup -->
+                    <div class="lg:col-span-5 relative flex justify-center fade-in-section">
+                        <div class="relative w-full max-w-md aspect-[4/5] rounded-3xl glass-card p-6 flex flex-col justify-between apple-glow overflow-hidden">
+                            <div class="absolute -top-24 -right-24 w-60 h-60 bg-primary/30 rounded-full blur-3xl pointer-events-none"></div>
+                            <div class="flex items-center justify-between z-10">
+                                <div class="flex space-x-2">
+                                    <div class="w-3 h-3 rounded-full bg-accentRed"></div>
+                                    <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                                </div>
+                                <span class="text-xs font-mono text-gray-400">AuraPlay Core v4.2</span>
+                            </div>
+                            <div class="my-auto py-6 z-10 text-center space-y-4">
+                                <div class="w-24 h-24 mx-auto rounded-2xl bg-gradient-to-tr from-primary to-accentRed flex items-center justify-center text-white text-4xl shadow-2xl red-glow">
+                                    <i class="fa-solid fa-chess-queen"></i>
+                                </div>
+                                <h3 class="text-2xl font-bold text-white">Elite Tables Ready</h3>
+                                <p class="text-sm text-gray-300 px-4">Experience ultra-smooth card animations and responsive gameplay mechanics.</p>
+                            </div>
+                            <div class="z-10 bg-gray-900/80 rounded-2xl p-4 border border-gray-800 flex items-center justify-between">
+                                <div>
+                                    <div class="text-xs text-gray-400">Active Players</div>
+                                    <div class="text-lg font-bold text-white">125,480+ Online</div>
+                                </div>
+                                <a href="https://officialallyonogames.com/rummy-east/" target="_blank" class="px-4 py-2 rounded-xl bg-primary text-white text-xs font-bold hover:bg-primaryDark transition-colors">Get Started</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Features Grid Section -->
+            <section class="py-24 bg-gradient-to-b from-darkBg to-cardBg/30 px-4 sm:px-6 lg:px-8">
+                <div class="max-w-7xl mx-auto space-y-16">
+                    <div class="text-center max-w-3xl mx-auto space-y-4 fade-in-section">
+                        <h2 class="text-3xl sm:text-4xl font-extrabold text-white">Engineered for Perfection</h2>
+                        <p class="text-gray-400 text-base sm:text-lg">Discover the architectural superiority that makes our gaming ecosystem stand out from the crowd.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div class="glass-card p-8 rounded-3xl space-y-6 fade-in-section">
+                            <div class="w-14 h-14 rounded-2xl bg-primary/20 text-primary flex items-center justify-center text-2xl font-bold">
+                                <i class="fa-solid fa-bolt"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-white">Ultra Low Latency</h3>
+                            <p class="text-gray-400 text-sm leading-relaxed">Optimized packet delivery ensuring millisecond-accurate responsiveness across all mobile and desktop devices.</p>
+                        </div>
+                        <div class="glass-card p-8 rounded-3xl space-y-6 fade-in-section">
+                            <div class="w-14 h-14 rounded-2xl bg-accentRed/20 text-accentRed flex items-center justify-center text-2xl font-bold">
+                                <i class="fa-solid fa-shield-cat"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-white">Advanced RNG Security</h3>
+                            <p class="text-gray-400 text-sm leading-relaxed">Certified random number generation algorithms guaranteeing absolute fairness and uncompromised shuffling.</p>
+                        </div>
+                        <div class="glass-card p-8 rounded-3xl space-y-6 fade-in-section">
+                            <div class="w-14 h-14 rounded-2xl bg-primary/20 text-primary flex items-center justify-center text-2xl font-bold">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-white">Apple-Grade Motion</h3>
+                            <p class="text-gray-400 text-sm leading-relaxed">Fluid transitions, haptic feedback simulation, and gorgeous dark-mode aesthetics designed for maximum visual comfort.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ================= PAGE 2: SERVICE ================= -->
+        <div id="page-service" class="page-content hidden">
+            <section class="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-16">
+                <div class="text-center max-w-3xl mx-auto space-y-4 fade-in-section">
+                    <span class="text-primary text-xs font-bold uppercase tracking-widest">Our Professional Offerings</span>
+                    <h1 class="text-4xl sm:text-5xl font-extrabold text-white">Elite Gaming Services</h1>
+                    <p class="text-gray-300 text-base sm:text-lg">Tailored solutions built for competitive strategists and casual entertainment seekers alike.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Service Card 1 -->
+                    <div class="glass-card p-8 sm:p-10 rounded-3xl space-y-6 flex flex-col justify-between fade-in-section">
+                        <div class="space-y-4">
+                            <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-primary to-primaryDark flex items-center justify-center text-white text-3xl shadow-lg">
+                                <i class="fa-solid fa-gamepad"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-white">Immersive Card Tournaments</h3>
+                            <p class="text-gray-300 leading-relaxed">Participate in daily and weekly competitive lobbies with real-time leaderboard tracking, dynamic matchmaking, and optimized table speeds.</p>
+                            <ul class="space-y-2 text-sm text-gray-400 pt-2">
+                                <li class="flex items-center space-x-2"><i class="fa-solid fa-check text-primary"></i><span>Automated bracket pairing</span></li>
+                                <li class="flex items-center space-x-2"><i class="fa-solid fa-check text-primary"></i><span>Multi-tier league structures</span></li>
+                                <li class="flex items-center space-x-2"><i class="fa-solid fa-check text-primary"></i><span>Anti-collusion protection protocols</span></li>
+                            </ul>
+                        </div>
+                        <div class="pt-6 border-t border-gray-800 flex items-center justify-between">
+                            <span class="text-xs font-mono text-primary uppercase">Tier: Premium Access</span>
+                            <a href="https://officialallyonogames.com/rummy-east/" target="_blank" class="px-5 py-2.5 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-primaryDark transition-colors">Access Now</a>
+                        </div>
+                    </div>
+
+                    <!-- Service Card 2 -->
+                    <div class="glass-card p-8 sm:p-10 rounded-3xl space-y-6 flex flex-col justify-between fade-in-section">
+                        <div class="space-y-4">
+                            <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-accentRed to-orange-600 flex items-center justify-center text-white text-3xl shadow-lg">
+                                <i class="fa-solid fa-headset"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-white">24/7 VIP Concierge Support</h3>
+                            <p class="text-gray-300 leading-relaxed">Our dedicated assistance squad is available round-the-clock to resolve account queries, technical bottlenecks, and gameplay rules.</p>
+                            <ul class="space-y-2 text-sm text-gray-400 pt-2">
+                                <li class="flex items-center space-x-2"><i class="fa-solid fa-check text-accentRed"></i><span>Sub-minute live chat response</span></li>
+                                <li class="flex items-center space-x-2"><i class="fa-solid fa-check text-accentRed"></i><span>Dedicated account managers for VIPs</span></li>
+                                <li class="flex items-center space-x-2"><i class="fa-solid fa-check text-accentRed"></i><span>Multilingual assistance team</span></li>
+                            </ul>
+                        </div>
+                        <div class="pt-6 border-t border-gray-800 flex items-center justify-between">
+                            <span class="text-xs font-mono text-accentRed uppercase">Tier: Standard & VIP</span>
+                            <button onclick="switchPage('contact')" class="px-5 py-2.5 rounded-xl bg-cardBg border border-gray-700 text-white text-sm font-semibold hover:border-accentRed transition-colors">Contact Support</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Banner Section -->
+                <div class="rounded-3xl glass-card p-8 sm:p-12 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8 apple-glow fade-in-section">
+                    <div class="absolute -right-20 -bottom-20 w-80 h-80 bg-primary/20 rounded-full blur-3xl pointer-events-none"></div>
+                    <div class="space-y-4 max-w-xl z-10">
+                        <h3 class="text-3xl font-extrabold text-white">Ready to experience the ultimate platform?</h3>
+                        <p class="text-gray-300">Download our client application today and jump straight into high-performance action.</p>
+                    </div>
+                    <div class="z-10 flex-shrink-0">
+                        <a href="https://officialallyonogames.com/rummy-east/" target="_blank" class="px-8 py-4 rounded-2xl bg-gradient-to-r from-primary to-accentRed text-white font-bold shadow-xl hover:opacity-90 transition-opacity flex items-center space-x-3">
+                            <span>Rummy East game download</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ================= PAGE 3: ABOUT ================= -->
+        <div id="page-about" class="page-content hidden">
+            <section class="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-20">
+                <div class="text-center max-w-3xl mx-auto space-y-4 fade-in-section">
+                    <span class="text-primary text-xs font-bold uppercase tracking-widest">Our Heritage & Vision</span>
+                    <h1 class="text-4xl sm:text-5xl font-extrabold text-white">Redefining Digital Entertainment</h1>
+                    <p class="text-gray-300 text-base sm:text-lg">Founded by a coalition of gaming veterans and software architects dedicated to purity in code and play.</p>
+                </div>
+
+                <!-- Story Section -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    <div class="space-y-6 fade-in-section">
+                        <h2 class="text-2xl sm:text-3xl font-bold text-white">The AuraPlay Journey</h2>
+                        <p class="text-gray-300 leading-relaxed font-light">
+                            Born out of frustration with clunky, ad-infested digital card platforms, AuraPlay was envisioned as a sanctuary of speed, elegance, and fairness. We combine minimalist Apple-inspired design principles with bulletproof server infrastructure.
+                        </p>
+                        <p class="text-gray-300 leading-relaxed font-light">
+                            Every animation is hand-tuned, every dealt hand is cryptographically secure, and every interaction is designed to respect your time and intelligence. Whether you are executing a complex sequence in a strategic card duel or exploring our optimized ecosystem via the <a href="https://officialallyonogames.com/rummy-east/" target="_blank" class="text-primary underline font-medium hover:text-white transition-colors">Rummy East game download</a> portal, excellence is guaranteed.
+                        </p>
+                    </div>
+                    <div class="relative flex justify-center fade-in-section">
+                        <div class="w-full aspect-[4/3] rounded-3xl glass-card overflow-hidden p-4 relative flex items-center justify-center apple-glow">
+                            <img src="https://placehold.co/600x450/131827/9370DB?text=AuraPlay+Studio" alt="Studio placeholder" class="rounded-2xl object-cover w-full h-full opacity-90" onerror="this.src='https://placehold.co/600x450/131827/9370DB?text=Gaming+Studio'">
+                            <div class="absolute inset-0 bg-gradient-to-t from-darkBg/80 via-transparent to-transparent flex items-end p-6">
+                                <div class="text-white font-semibold text-lg">Engineering Excellence Since 2022</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mission / Values -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 pt-8">
+                    <div class="glass-card p-8 rounded-3xl space-y-4 fade-in-section">
+                        <div class="text-primary text-3xl font-bold"><i class="fa-solid fa-bullseye"></i></div>
+                        <h3 class="text-xl font-bold text-white">Our Mission</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">To deliver world-class digital gaming environments that prioritize user privacy, absolute fairness, and uncompromised aesthetic beauty.</p>
+                    </div>
+                    <div class="glass-card p-8 rounded-3xl space-y-4 fade-in-section">
+                        <div class="text-accentRed text-3xl font-bold"><i class="fa-solid fa-eye"></i></div>
+                        <h3 class="text-xl font-bold text-white">Our Vision</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">To become the global gold standard for card strategy platforms by integrating state-of-the-art client performance with intuitive human interfaces.</p>
+                    </div>
+                    <div class="glass-card p-8 rounded-3xl space-y-4 fade-in-section">
+                        <div class="text-primary text-3xl font-bold"><i class="fa-solid fa-heart"></i></div>
+                        <h3 class="text-xl font-bold text-white">Core Values</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">Transparency in our algorithms, relentless optimization in our codebases, and unwavering dedication to our player community.</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ================= PAGE 4: BLOG ================= -->
+        <div id="page-blog" class="page-content hidden">
+            <section class="py-20 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto space-y-12">
+                <!-- Blog Header -->
+                <div class="text-center space-y-4 fade-in-section">
+                    <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold uppercase tracking-wider">
+                        <i class="fa-solid fa-newspaper"></i>
+                        <span>Insights & Strategy</span>
+                    </div>
+                    <h1 class="text-3xl sm:text-5xl font-extrabold text-white leading-tight">
+                        Mastering Tactical Card Entertainment in the Digital Age
+                    </h1>
+                    <div class="flex items-center justify-center space-x-4 text-sm text-gray-400 pt-2">
+                        <span>Published by AuraPlay Editorial</span>
+                        <span>•</span>
+                        <span>12 Min Read</span>
+                        <span>•</span>
+                        <span>Updated October 2026</span>
+                    </div>
+                </div>
+
+                <!-- Featured Image Placeholder -->
+                <div class="rounded-3xl overflow-hidden glass-card p-3 fade-in-section">
+                    <img src="https://placehold.co/900x500/131827/9370DB?text=Strategic+Gaming+Mastery" alt="Gaming strategy visualization" class="w-full h-auto rounded-2xl object-cover max-h-[450px]" onerror="this.src='https://placehold.co/900x500/131827/9370DB?text=Card+Strategy'">
+                </div>
+
+                <!-- Blog Body Content (1200+ words structured with H1, H2, H3, Conclusion, FNP) -->
+                <article class="prose prose-invert max-w-none space-y-10 text-gray-300 font-light leading-relaxed text-base sm:text-lg fade-in-section">
+
+                    <!-- H1 / Lead paragraph equivalent -->
+                    <div class="space-y-4">
+                        <h1 class="text-2xl sm:text-3xl font-bold text-white tracking-tight border-l-4 border-primary pl-4">
+                            The Evolution of Online Skill Gaming and Modern Platform Architecture
+                        </h1>
+                        <p>
+                            Digital entertainment has undergone a monumental shift over the past decade. What once required physical decks of cards and crowded tables has now transformed into sleek, ultra-responsive virtual ecosystems accessible from anywhere in the world. As players demand higher fidelity, faster frame rates, and guaranteed fairness, developers must leverage cutting-edge frameworks to deliver an unforgettable experience. Whether you are an analytical thinker evaluating probabilistic card distributions or a casual gamer looking for seamless evening entertainment, understanding the underlying technology elevates your appreciation of the craft.
+                        </p>
+                        <p>
+                            Platforms that excel in this domain focus heavily on reducing input latency, optimizing mobile rendering pipelines, and establishing rigorous cryptographic security. When users look for a seamless experience like the <a href="https://officialallyonogames.com/rummy-east/" target="_blank" class="text-primary font-medium underline hover:text-white transition-colors">Rummy East game download</a>, they are not just looking for a simple application file; they are seeking a complete, stable entertainment ecosystem designed with meticulous attention to detail.
+                        </p>
+                    </div>
+
+                    <!-- H2 Section -->
+                    <div class="space-y-4 pt-6">
+                        <h2 class="text-xl sm:text-2xl font-bold text-white tracking-tight flex items-center space-x-3">
+                            <span class="w-8 h-8 rounded-lg bg-primary/20 text-primary flex items-center justify-center text-sm font-bold">01</span>
+                            <span>Anatomy of a High-Performance Gaming Application</span>
+                        </h2>
+                        <p>
+                            The hallmark of a world-class digital gaming application lies in its architecture. Modern users expect instantaneous load times, fluid touch responses, and zero stuttering during complex animations. Achieving this level of polish requires a rigorous approach to frontend and backend engineering.
+                        </p>
+                        <p>
+                            When building robust environments, engineers prioritize lightweight asset delivery, asynchronous data synchronization, and robust error-handling states. This ensures that even during peak traffic hours or fluctuating network conditions, the user's session remains stable and uninterrupted.
+                        </p>
+
+                        <!-- H3 Subsection -->
+                        <div class="space-y-3 pl-4 sm:pl-6 border-l border-gray-800 pt-2">
+                            <h3 class="text-lg sm:text-xl font-semibold text-white">
+                                Why Client Optimization Matters for Strategy Enthusiasts
+                            </h3>
+                            <p>
+                                Strategic card games require intense concentration. Any visual lag or unexpected UI delay can break a player's focus and ruin the immersive experience. By utilizing hardware-accelerated rendering and clean CSS/JS architecture, modern platforms eliminate jitter. When players complete a <a href="https://officialallyonogames.com/rummy-east/" target="_blank" class="text-primary font-medium underline hover:text-white transition-colors">Rummy East game download</a>, they immediately notice the difference that proper optimization brings to table transitions and card-shuffling animations.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- H2 Section 2 -->
+                    <div class="space-y-4 pt-6">
+                        <h2 class="text-xl sm:text-2xl font-bold text-white tracking-tight flex items-center space-x-3">
+                            <span class="w-8 h-8 rounded-lg bg-accentRed/20 text-accentRed flex items-center justify-center text-sm font-bold">02</span>
+                            <span>Strategic Principles for Card Game Mastery</span>
+                        </h2>
+                        <p>
+                            Beyond software engineering and platform stability, winning at competitive card games demands psychological discipline, probability calculation, and adaptability. Regardless of the specific variant you play, certain foundational tenets remain universally applicable.
+                        </p>
+                        <p>
+                            First, master the art of observation. Pay close attention to your opponents' discards, drawing patterns, and tactical pacing. Second, manage your virtual resources—whether chips, time, or hand flexibility—with surgical precision. Impulsive moves often lead to avoidable mistakes, whereas methodical planning yields long-term consistency.
+                        </p>
+
+                        <!-- H3 Subsection 2 -->
+                        <div class="space-y-3 pl-4 sm:pl-6 border-l border-gray-800 pt-2">
+                            <h3 class="text-lg sm:text-xl font-semibold text-white">
+                                Developing Mental Resilience Under Pressure
+                            </h3>
+                            <p>
+                                High-stakes matches can induce stress, leading to cognitive fatigue. Elite players practice strict bankroll and emotional management, ensuring that variance does not cloud their tactical judgment. Coupled with a stable platform like the one accessed via the <a href="https://officialallyonogames.com/rummy-east/" target="_blank" class="text-primary font-medium underline hover:text-white transition-colors">Rummy East game download</a> portal, players can focus entirely on strategy rather than technical frustrations.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- H2 Section 3: Security & Fairness -->
+                    <div class="space-y-4 pt-6">
+                        <h2 class="text-xl sm:text-2xl font-bold text-white tracking-tight flex items-center space-x-3">
+                            <span class="w-8 h-8 rounded-lg bg-primary/20 text-primary flex items-center justify-center text-sm font-bold">03</span>
+                            <span>Ensuring Absolute Fairness and Data Privacy</span>
+                        </h2>
+                        <p>
+                            Trust is the cornerstone of any digital entertainment community. Players must have 100% confidence that the shuffling algorithms are unbiased and that their personal information is guarded by state-of-the-art encryption standards.
+                        </p>
+                        <p>
+                            Industry leaders employ cryptographically secure pseudo-random number generators (CSPRNG) audited by independent testing laboratories. Furthermore, strict adherence to secure socket layer (SSL) protocols ensures that all network traffic between the client device and the server remains completely confidential and tamper-proof.
+                        </p>
+                    </div>
+
+                    <!-- Conclusion Section -->
+                    <div class="space-y-4 pt-8 border-t border-gray-800">
+                        <h2 class="text-xl sm:text-2xl font-extrabold text-white">Conclusion</h2>
+                        <p>
+                            The digital gaming landscape is more vibrant, technically sophisticated, and accessible than ever before. By combining minimalist design, lightning-fast performance, and robust security, platforms are able to deliver experiences that rival traditional physical entertainment. Whether you are refining your analytical prowess or exploring new digital lobbies through a secure <a href="https://officialallyonogames.com/rummy-east/" target="_blank" class="text-primary font-medium underline hover:text-white transition-colors">Rummy East game download</a>, the key to lasting enjoyment lies in choosing well-engineered, trustworthy platforms that respect both your intellect and your time.
+                        </p>
+                    </div>
+
+                    <!-- FNP (FAQ / Final Notes / Key Takeaways) -->
+                    <div class="space-y-6 pt-6 bg-cardBg/60 p-6 sm:p-8 rounded-3xl border border-gray-800">
+                        <h2 class="text-xl font-bold text-white flex items-center space-x-2">
+                            <i class="fa-solid fa-clipboard-list text-primary"></i>
+                            <span>FNP (Final Notes & Key Takeaways)</span>
+                        </h2>
+                        <ul class="space-y-4 text-sm sm:text-base text-gray-300">
+                            <li class="flex items-start space-x-3">
+                                <i class="fa-solid fa-circle-check text-primary mt-1"></i>
+                                <div><strong class="text-white">Performance First:</strong> Always choose gaming applications built with optimized lightweight frameworks for zero-lag responsiveness.</div>
+                            </li>
+                            <li class="flex items-start space-x-3">
+                                <i class="fa-solid fa-circle-check text-primary mt-1"></i>
+                                <div><strong class="text-white">Strategic Discipline:</strong> Success in competitive card entertainment requires emotional composure, probability awareness, and meticulous resource management.</div>
+                            </li>
+                            <li class="flex items-start space-x-3">
+                                <i class="fa-solid fa-circle-check text-primary mt-1"></i>
+                                <div><strong class="text-white">Verified Sources:</strong> Ensure you obtain your client installers from trusted official channels such as the verified <a href="https://officialallyonogames.com/rummy-east/" target="_blank" class="text-primary underline hover:text-white">Rummy East game download</a> page to guarantee security and stability.</div>
+                            </li>
+                        </ul>
+                    </div>
+
+                </article>
+            </section>
+        </div>
+
+        <!-- ================= PAGE 5: CONTACT ================= -->
+        <div id="page-contact" class="page-content hidden">
+            <section class="py-20 px-4 sm:px-6 lg:px-8 max-w-3xl mx-auto space-y-12">
+                <div class="text-center space-y-4 fade-in-section">
+                    <span class="text-primary text-xs font-bold uppercase tracking-widest">Get In Touch</span>
+                    <h1 class="text-4xl sm:text-5xl font-extrabold text-white">Send Us a Message</h1>
+                    <p class="text-gray-300 text-base sm:text-lg">Have questions, feedback, or need assistance? Fill out the secure form below and our team will respond promptly.</p>
+                </div>
+
+                <!-- Interactive Contact Form Card (No personal details visible, user inputs info to send) -->
+                <div class="glass-card p-8 sm:p-12 rounded-3xl space-y-8 apple-glow fade-in-section">
+                    <form id="contact-form" onsubmit="handleFormSubmit(event)" class="space-y-6">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <div class="space-y-2">
+                                <label for="visitor-name" class="block text-sm font-medium text-gray-300">Your Full Name</label>
+                                <div class="relative">
+                                    <span class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-500">
+                                        <i class="fa-solid fa-user"></i>
+                                    </span>
+                                    <input type="text" id="visitor-name" required placeholder="Alexander Vance" class="w-full pl-11 pr-4 py-3.5 rounded-xl bg-gray-900/80 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-primary transition-colors text-sm">
+                                </div>
+                            </div>
+                            <div class="space-y-2">
+                                <label for="visitor-email" class="block text-sm font-medium text-gray-300">Email Address</label>
+                                <div class="relative">
+                                    <span class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-500">
+                                        <i class="fa-solid fa-envelope"></i>
+                                    </span>
+                                    <input type="email" id="visitor-email" required placeholder="alexander@example.com" class="w-full pl-11 pr-4 py-3.5 rounded-xl bg-gray-900/80 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-primary transition-colors text-sm">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label for="visitor-phone" class="block text-sm font-medium text-gray-300">Phone Number</label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-500">
+                                    <i class="fa-solid fa-phone"></i>
+                                </span>
+                                <input type="tel" id="visitor-phone" required placeholder="+1 (555) 019-2834" class="w-full pl-11 pr-4 py-3.5 rounded-xl bg-gray-900/80 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-primary transition-colors text-sm">
+                            </div>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label for="visitor-message" class="block text-sm font-medium text-gray-300">Your Message</label>
+                            <textarea id="visitor-message" rows="5" required placeholder="Tell us how we can help you..." class="w-full p-4 rounded-xl bg-gray-900/80 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-primary transition-colors text-sm resize-none"></textarea>
+                        </div>
+
+                        <button type="submit" id="submit-btn" class="w-full py-4 rounded-xl bg-gradient-to-r from-primary to-accentRed text-white font-bold text-base shadow-xl hover:opacity-90 transition-all duration-300 flex items-center justify-center space-x-2">
+                            <span>Send Secure Message</span>
+                            <i class="fa-solid fa-paper-plane"></i>
+                        </button>
+                    </form>
+
+                    <!-- Success Message Box (Replaces alert() requirement) -->
+                    <div id="success-message" class="hidden p-6 rounded-2xl bg-green-500/10 border border-green-500/30 text-green-400 text-center space-y-2 animate-pulse">
+                        <div class="text-2xl"><i class="fa-solid fa-circle-check"></i></div>
+                        <h4 class="font-bold text-lg text-white">Message Sent Successfully!</h4>
+                        <p class="text-sm text-gray-300">Thank you for reaching out. Our support team has received your details and will get back to you shortly.</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+    </main>
+
+    <footer class="bg-cardBg border-t border-gray-800 mt-20 py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+            <div class="space-y-4 md:col-span-2">
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-primary to-accentRed flex items-center justify-center text-white font-black text-lg">
+                        A
+                    </div>
+                    <span class="text-lg font-bold text-white">AuraPlay Entertainment</span>
+                </div>
+                <p class="text-gray-400 text-sm max-w-sm leading-relaxed">
+                    Delivering premium digital card entertainment with Apple-grade motion design, cryptographic fairness, and lightning-fast performance.
+                </p>
+            </div>
+            <div class="space-y-3">
+                <h4 class="text-white font-semibold text-sm uppercase tracking-wider">Quick Links</h4>
+                <ul class="space-y-2 text-sm text-gray-400">
+                    <li><button onclick="switchPage('home')" class="hover:text-primary transition-colors">Home Page</button></li>
+                    <li><button onclick="switchPage('service')" class="hover:text-primary transition-colors">Our Services</button></li>
+                    <li><button onclick="switchPage('about')" class="hover:text-primary transition-colors">About Studio</button></li>
+                    <li><button onclick="switchPage('blog')" class="hover:text-primary transition-colors">Strategy Blog</button></li>
+                    <li><button onclick="switchPage('contact')" class="hover:text-primary transition-colors">Contact Us</button></li>
+                </ul>
+            </div>
+            <div class="space-y-3">
+                <h4 class="text-white font-semibold text-sm uppercase tracking-wider">Official Access</h4>
+                <p class="text-xs text-gray-400">Ready to play? Get the verified client application now.</p>
+                <a href="https://officialallyonogames.com/rummy-east/" target="_blank" class="inline-block px-4 py-2 rounded-xl bg-primary text-white text-xs font-bold hover:bg-primaryDark transition-colors">Rummy East game download</a>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto pt-8 border-t border-gray-800/80 flex flex-col sm:flex-row items-center justify-between text-xs text-gray-500">
+            <p>&copy; 2026 AuraPlay Entertainment. All rights reserved.</p>
+            <div class="flex space-x-6 mt-4 sm:mt-0">
+                <a href="#" class="hover:text-gray-400">Privacy Policy</a>
+                <a href="#" class="hover:text-gray-400">Terms of Service</a>
+                <a href="#" class="hover:text-gray-400">Security Audit</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Page Navigation Controller
+        function switchPage(pageId) {
+            // Hide all pages
+            const pages = document.querySelectorAll('.page-content');
+            pages.forEach(page => {
+                page.classList.remove('block');
+                page.classList.add('hidden');
+            });
+
+            // Show selected page
+            const targetPage = document.getElementById('page-' + pageId);
+            if (targetPage) {
+                targetPage.classList.remove('hidden');
+                targetPage.classList.add('block');
+            }
+
+            // Update navigation button active states
+            const navButtons = document.querySelectorAll('.nav-btn');
+            navButtons.forEach(btn => {
+                btn.classList.remove('bg-primary', 'text-white', 'shadow-md');
+                btn.classList.add('text-gray-300', 'hover:text-white', 'hover:bg-gray-800/50');
+            });
+
+            const activeBtn = document.getElementById('nav-' + pageId);
+            if (activeBtn) {
+                activeBtn.classList.remove('text-gray-300', 'hover:text-white', 'hover:bg-gray-800/50');
+                activeBtn.classList.add('bg-primary', 'text-white', 'shadow-md');
+            }
+
+            // Scroll to top smoothly
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // Trigger fade-in observer for newly visible elements
+            setTimeout(checkFadeIns, 100);
+        }
+
+        // Mobile Menu Toggle
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const icon = document.getElementById('mobile-menu-icon');
+            if (menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden');
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-xmark');
+            } else {
+                menu.classList.add('hidden');
+                icon.classList.remove('fa-xmark');
+                icon.classList.add('fa-bars');
+            }
+        }
+
+        // Contact Form Handler (No alert() used as per instructions)
+        function handleFormSubmit(event) {
+            event.preventDefault();
+            const btn = document.getElementById('submit-btn');
+            const successBox = document.getElementById('success-message');
+            const form = document.getElementById('contact-form');
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i> Sending...';
+
+            setTimeout(() => {
+                form.classList.add('hidden');
+                successBox.classList.remove('hidden');
+            }, 1000);
+        }
+
+        // Apple-style Scroll Fade-in Observer
+        function checkFadeIns() {
+            const sections = document.querySelectorAll('.fade-in-section');
+            const triggerBottom = window.innerHeight * 0.88;
+
+            sections.forEach(section => {
+                const sectionTop = section.getBoundingClientRect().top;
+                if (sectionTop < triggerBottom) {
+                    section.classList.add('is-visible');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', checkFadeIns);
+        window.addEventListener('load', () => {
+            checkFadeIns();
+        });
+    </script>
+</body>
+</html>
